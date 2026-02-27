@@ -14,9 +14,9 @@ import {
 
 const navLinks = [
   { label: 'Home', href: '#' },
-  { label: 'All campaigns', href: '#campaigns' },
-  { label: 'How it works', href: '#how-it-works' },
-  { label: 'FAQs', href: '#faq' },
+  { label: 'All campaigns', href: '/all-campaigns' },
+  { label: 'How it works', href: '/how-it-works' },
+  { label: 'FAQs', href: '/faq' },
 ];
 
 export function Header() {

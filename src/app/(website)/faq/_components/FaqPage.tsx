@@ -1,29 +1,46 @@
-"use client"
+"use client";
 
-import React, { useState } from "react"
-import { ChevronDown, ChevronRight } from "lucide-react"
-import Image from "next/image"
-import { cn } from "@/lib/utils"
+import React, { useState } from "react";
+import { ChevronDown, ChevronRight } from "lucide-react";
+import Image from "next/image";
+import { cn } from "@/lib/utils";
+import Link from "next/link";
 
 type FaqCategory = {
-  id: string
-  label: string
-  icon: React.ReactNode
-}
+  id: string;
+  label: string;
+  icon: React.ReactNode;
+};
 
 type FaqItem = {
-  id: string
-  categoryId: string
-  question: string
-  answer: string
-}
+  id: string;
+  categoryId: string;
+  question: string;
+  answer: string;
+};
 
 const FAQ_CATEGORIES: FaqCategory[] = [
-  { id: "funding-basics", label: "Funding basics", icon: <ChevronRight className="w-5 h-5" /> },
-  { id: "withdrawals", label: "Withdrawals", icon: <ChevronRight className="w-5 h-5" /> },
-  { id: "account", label: "Account", icon: <ChevronRight className="w-5 h-5" /> },
-  { id: "donations", label: "Donations", icon: <ChevronRight className="w-5 h-5" /> },
-]
+  {
+    id: "funding-basics",
+    label: "Funding basics",
+    icon: <ChevronRight className="w-5 h-5" />,
+  },
+  {
+    id: "withdrawals",
+    label: "Withdrawals",
+    icon: <ChevronRight className="w-5 h-5" />,
+  },
+  {
+    id: "account",
+    label: "Account",
+    icon: <ChevronRight className="w-5 h-5" />,
+  },
+  {
+    id: "donations",
+    label: "Donations",
+    icon: <ChevronRight className="w-5 h-5" />,
+  },
+];
 
 const FAQ_ITEMS: FaqItem[] = [
   {
@@ -40,20 +57,19 @@ const FAQ_ITEMS: FaqItem[] = [
     answer:
       "Funds are typically available within 2–5 business days after a donation is made.",
   },
-]
+];
 
 export default function FaqPage() {
-  const [activeCategory, setActiveCategory] = useState("funding-basics")
-  const [openId, setOpenId] = useState<string | null>(null)
+  const [activeCategory, setActiveCategory] = useState("funding-basics");
+  const [openId, setOpenId] = useState<string | null>(null);
 
   const filteredFaqs = FAQ_ITEMS.filter(
-    (faq) => faq.categoryId === activeCategory
-  )
+    (faq) => faq.categoryId === activeCategory,
+  );
 
   return (
     <section className="bg-gray-100 py-20 px-4 min-h-screen">
       <div className="max-w-7xl mx-auto">
-
         {/* Title */}
         <h2 className="text-3xl font-bold text-gray-900 text-center mb-16">
           Frequently Asked Questions
@@ -61,34 +77,33 @@ export default function FaqPage() {
 
         {/* Main Layout */}
         <div className="flex flex-col lg:flex-row gap-10">
-
           {/* Category Sidebar */}
           <div className="w-full lg:w-[320px] bg-white rounded-[8px] shadow-sm overflow-hidden">
             {FAQ_CATEGORIES.map((cat) => {
-              const isActive = cat.id === activeCategory
+              const isActive = cat.id === activeCategory;
               return (
                 <button
                   key={cat.id}
                   onClick={() => {
-                    setActiveCategory(cat.id)
-                    setOpenId(null)
+                    setActiveCategory(cat.id);
+                    setOpenId(null);
                   }}
                   className={cn(
                     "w-full flex items-center justify-between px-6 py-5 text-sm font-medium border-b last:border-none transition-all",
                     isActive
                       ? "bg-blue-50 text-blue-600"
-                      : "text-gray-700 hover:bg-gray-50"
+                      : "text-gray-700 hover:bg-gray-50",
                   )}
                 >
                   <span>{cat.label}</span>
                   <ChevronRight
                     className={cn(
                       "w-4 h-4 transition",
-                      isActive ? "text-blue-600" : "text-gray-400"
+                      isActive ? "text-blue-600" : "text-gray-400",
                     )}
                   />
                 </button>
-              )
+              );
             })}
           </div>
 
@@ -96,13 +111,11 @@ export default function FaqPage() {
           <div className="flex-1 px-8 py-6 divide-y">
             {filteredFaqs.length > 0 ? (
               filteredFaqs.map((item) => {
-                const isOpen = openId === item.id
+                const isOpen = openId === item.id;
                 return (
                   <div key={item.id} className="py-5">
                     <button
-                      onClick={() =>
-                        setOpenId(isOpen ? null : item.id)
-                      }
+                      onClick={() => setOpenId(isOpen ? null : item.id)}
                       className="w-full flex items-center justify-between text-left"
                     >
                       <span className="text-base font-medium text-gray-800">
@@ -111,7 +124,7 @@ export default function FaqPage() {
                       <ChevronDown
                         className={cn(
                           "w-5 h-5 transition-transform duration-200",
-                          isOpen && "rotate-180"
+                          isOpen && "rotate-180",
                         )}
                       />
                     </button>
@@ -122,7 +135,7 @@ export default function FaqPage() {
                       </p>
                     )}
                   </div>
-                )
+                );
               })
             ) : (
               <p className="text-center text-gray-400 py-10">
@@ -145,9 +158,11 @@ export default function FaqPage() {
               <p className="text-white text-xl font-bold">
                 Discover amazing fundraising campaigns
               </p>
-              <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition">
-                Fund someone
-              </button>
+              <Link href="/all-campaigns">
+                <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition">
+                  Fund someone
+                </button>
+              </Link>
             </div>
           </div>
 
@@ -162,14 +177,15 @@ export default function FaqPage() {
               <p className="text-white text-xl font-bold">
                 Create your campaign
               </p>
-              <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition">
-                Start fundraising
-              </button>
+              <Link href="/all-campaigns">
+                <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition">
+                  Start fundraising
+                </button>
+              </Link>
             </div>
           </div>
         </div>
-
       </div>
     </section>
-  )
+  );
 }

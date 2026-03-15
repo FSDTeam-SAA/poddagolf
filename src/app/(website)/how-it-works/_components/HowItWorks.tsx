@@ -229,9 +229,11 @@ function CTABanners() {
               <br />
               fundraising campaigns
             </p>
-            <button className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-6 py-2.5 rounded transition">
-              Fund someone
+            <Link href="/all-campaigns">
+              <button className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-6 py-2.5 rounded transition">
+              Fund someone  
             </button>
+            </Link>
           </div>
         </div>
 
@@ -247,9 +249,11 @@ function CTABanners() {
             <p className="text-white font-bold text-xl leading-tight">
               Create your campaign
             </p>
+            <Link href = "/">
             <button className="bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold px-6 py-2.5 rounded transition">
               Start donating
             </button>
+            </Link>
           </div>
         </div>
       </div>

@@ -544,7 +544,7 @@ export default function DonorInformation() {
                 className="mt-0.5 accent-blue-600 cursor-pointer"
               />
               <label htmlFor="agree" className="text-base text-[#000000] cursor-pointer leading-relaxed">
-                I agree to [company name] terms, privacy policy, and industry low fees
+                I agree to the terms, privacy policy, and industry low fees
               </label>
             </div>
 

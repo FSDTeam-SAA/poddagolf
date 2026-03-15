@@ -67,17 +67,17 @@ export function Header() {
       <div className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-[90px] items-center justify-between">
           {/* Logo */}
-<Link href="/" className="flex items-center gap-2">
-  <Image
-    src="/images/mainLogo.png"
-    alt="Logo"
-    width={50}
-    height={50}
-    className="h-[50px] w-[50px] object-contain"
-  />
+          <Link href="/" className="flex items-center gap-2">
+            <Image
+              src="/images/mainLogo.png"
+              alt="Logo"
+              width={180}
+              height={180}
+              className="h-[70px] w-[70px] object-contain"
+            />
 
-  <span className="hidden font-semibold sm:inline-block">LOGO</span>
-</Link>
+            {/* <span className="hidden font-semibold sm:inline-block">LOGO</span> */}
+          </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-8">

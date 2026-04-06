@@ -3,6 +3,8 @@
 import { useQuery } from "@tanstack/react-query";
 import React from "react";
 import { Skeleton } from "@/components/ui/skeleton";
+import { useRouter } from "next/navigation";
+import { ArrowLeft } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 type Direction =
@@ -12,14 +14,15 @@ type Direction =
   | "DRAW"
   | "FADE"
   | "HEAVY LEFT"
-  | "HEAVY RIGHT";
+  | "HEAVY RIGHT"
+  | "N/A";
 
 interface ShotRecord {
   _id: string;
   time: string;
   club: string;
   direction: Direction;
-  distance: number;
+  distance: number | null;
 }
 
 // ─── Direction Arrow ──────────────────────────────────────────────────────────
@@ -31,13 +34,14 @@ const DIRECTION_META: Record<Direction, { arrow: string; color: string }> = {
   FADE:         { arrow: "↑",  color: "#3b82f6" },
   "HEAVY LEFT": { arrow: "←",  color: "#3b82f6" },
   "HEAVY RIGHT":{ arrow: "→",  color: "#3b82f6" },
+  "N/A":        { arrow: "•",  color: "#9ca3af" },
 };
 
 interface SessionShotApi {
   _id: string;
   club: string;
-  distance: number;
-  direction: string;
+  distance: number | null;
+  direction: string | null;
   recordedAt: string;
 }
 
@@ -47,7 +51,8 @@ interface SessionShotsResponse {
   data: SessionShotApi[];
 }
 
-function normalizeDirection(direction: string): Direction {
+function normalizeDirection(direction?: string | null): Direction {
+  if (!direction) return "N/A";
   const key = direction.trim().toUpperCase();
   if (key === "STRAIGHT") return "STRAIGHT";
   if (key === "SLIGHT RIGHT") return "SLIGHT RIGHT";
@@ -56,7 +61,7 @@ function normalizeDirection(direction: string): Direction {
   if (key === "FADE") return "FADE";
   if (key === "HEAVY LEFT") return "HEAVY LEFT";
   if (key === "HEAVY RIGHT") return "HEAVY RIGHT";
-  return "STRAIGHT";
+  return "N/A";
 }
 
 function formatTime(isoDate: string): string {
@@ -100,8 +105,10 @@ function ShotRow({ shot }: { shot: ShotRecord }) {
       <div className="flex flex-col gap-1">
         <span className="text-xs text-gray-400 font-medium tracking-wide">Distance</span>
         <span className="text-[1.05rem] font-bold text-gray-900">
-          {shot.distance}
-          <span className="text-sm font-normal text-gray-500 ml-0.5">m</span>
+          {shot.distance ?? "-"}
+          {shot.distance !== null && (
+            <span className="text-sm font-normal text-gray-500 ml-0.5">m</span>
+          )}
         </span>
       </div>
     </div>
@@ -110,6 +117,8 @@ function ShotRow({ shot }: { shot: ShotRecord }) {
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function HistoryPage() {
+  const router = useRouter();
+
   const { data: shots = [], isLoading } = useQuery({
     queryKey: ["session-shots"],
     queryFn: async () => {
@@ -142,6 +151,14 @@ export default function HistoryPage() {
       }}
     >
       <div className="max-w-6xl mx-auto">
+        <button
+          type="button"
+          onClick={() => router.push("/")}
+          className="mb-4 inline-flex items-center gap-2 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+        >
+          <ArrowLeft className="h-4 w-4" />
+          Back
+        </button>
         <h1 className="text-[2.4rem] font-bold text-gray-900 mb-6">History</h1>
 
         <div className="flex flex-col gap-3">

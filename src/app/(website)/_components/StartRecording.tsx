@@ -213,11 +213,11 @@ function TranscribedView({
 
       {/* Single result field */}
       <div className="relative w-full bg-blue-50 border border-blue-100 rounded-xl px-4 py-3 min-h-[60px]">
-        <p className="text-gray-800 text-base leading-relaxed font-medium tracking-wide flex items-center gap-2">
-          {club && <span className="text-[#c9a84c]">{club},</span>}
+        <p className="text-black text-[18px] leading-relaxed font-medium tracking-wide flex items-center gap-2">
+          {club && <span className="">{club},</span>}
 
           {distance && (
-            <span className="px-1 py-0.5 bg-gray-100 rounded-md text-sm">
+            <span className="px-1 py-0.5 bg-gray-100 rounded-md">
               {distance}m,
             </span>
           )}
@@ -442,6 +442,11 @@ export default function StartRecording() {
     setDirection("");
     setStage("idle");
   }, []);
+
+  const handleRedoAndStart = useCallback(async () => {
+    handleRedo();
+    await startRecording();
+  }, [handleRedo, startRecording]);
   return (
     <div className="flex min-h-[calc(100vh-85px)] w-full items-center justify-center px-4">
       <div className="max-w-6xl mx-auto flex h-[630px] w-full flex-col rounded-lg bg-white py-16">
@@ -469,14 +474,14 @@ export default function StartRecording() {
             />
           )}
           {stage === "transcribing" && <TranscribingView />}
-          {stage === "transcribed" && (
-            <TranscribedView
-              club={club}
-              distance={distance}
-              direction={direction}
-              onRedo={handleRedo}
-            />
-          )}
+        {stage === "transcribed" && (
+          <TranscribedView
+            club={club}
+            distance={distance}
+            direction={direction}
+            onRedo={handleRedoAndStart}
+          />
+        )}
         </div>
       </div>
     </div>

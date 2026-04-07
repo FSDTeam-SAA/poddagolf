@@ -7,21 +7,12 @@ import { useRouter } from "next/navigation";
 import { ArrowLeft } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
-type Direction =
-  | "STRAIGHT"
-  | "SLIGHT RIGHT"
-  | "SLIGHT LEFT"
-  | "DRAW"
-  | "FADE"
-  | "HEAVY LEFT"
-  | "HEAVY RIGHT"
-  | "N/A";
 
 interface ShotRecord {
   _id: string;
   time: string;
   club: string | null;
-  direction: Direction;
+  direction: string;
   distance: number | null;
   shotType?: string | null;
   position?: string | null;
@@ -30,7 +21,7 @@ interface ShotRecord {
 }
 
 // ─── Direction Arrow ──────────────────────────────────────────────────────────
-const DIRECTION_META: Record<Direction, { arrow: string; color: string }> = {
+const DIRECTION_META: Record<string, { arrow: string; color: string }> = {
   STRAIGHT: { arrow: "↑", color: "#3b82f6" },
   "SLIGHT RIGHT": { arrow: "↗", color: "#3b82f6" },
   "SLIGHT LEFT": { arrow: "↖", color: "#3b82f6" },
@@ -38,9 +29,9 @@ const DIRECTION_META: Record<Direction, { arrow: string; color: string }> = {
   FADE: { arrow: "↑", color: "#3b82f6" },
   "HEAVY LEFT": { arrow: "←", color: "#3b82f6" },
   "HEAVY RIGHT": { arrow: "→", color: "#3b82f6" },
-  "N/A": { arrow: "•", color: "#9ca3af" },
 };
 
+// ─── API Types ────────────────────────────────────────────────────────────────
 interface SessionShotApi {
   _id: string;
   club: string;
@@ -59,19 +50,6 @@ interface SessionShotsResponse {
   data: SessionShotApi[];
 }
 
-function normalizeDirection(direction?: string | null): Direction {
-  if (!direction) return "N/A";
-  const key = direction.trim().toUpperCase();
-  if (key === "STRAIGHT") return "STRAIGHT";
-  if (key === "SLIGHT RIGHT") return "SLIGHT RIGHT";
-  if (key === "SLIGHT LEFT") return "SLIGHT LEFT";
-  if (key === "DRAW") return "DRAW";
-  if (key === "FADE") return "FADE";
-  if (key === "HEAVY LEFT") return "HEAVY LEFT";
-  if (key === "HEAVY RIGHT") return "HEAVY RIGHT";
-  return "N/A";
-}
-
 function formatTime(isoDate: string): string {
   return new Date(isoDate).toLocaleTimeString([], {
     hour: "2-digit",
@@ -82,40 +60,61 @@ function formatTime(isoDate: string): string {
 
 // ─── Row ──────────────────────────────────────────────────────────────────────
 function ShotRow({ shot }: { shot: ShotRecord }) {
-  const meta = DIRECTION_META[shot.direction];
+  const meta =
+    DIRECTION_META[shot.direction?.toUpperCase()] || {
+      arrow: "",
+      color: "#9ca3af",
+    };
 
   return (
     <div className="grid grid-cols-4 gap-4 px-6 py-5 border border-gray-200 rounded-2xl bg-white">
       {/* Time */}
       <div className="flex flex-col gap-1">
-        <span className="text-xs text-gray-400 font-medium tracking-wide">Time</span>
-        <span className="text-[1.05rem] font-bold text-gray-900">{shot.time}</span>
+        <span className="text-xs text-gray-400 font-medium tracking-wide">
+          Time
+        </span>
+        <span className="text-[1.05rem] font-bold text-gray-900">
+          {shot.time}
+        </span>
       </div>
 
       {/* Club */}
       <div className="flex flex-col gap-1">
-        <span className="text-xs text-gray-400 font-medium tracking-wide">Club</span>
-        <span className="text-[1.05rem] font-bold text-gray-900">{shot.club ?? "-"}</span>
-      </div>
-
-      {/* Direction */}
-      <div className="flex flex-col gap-1">
-        <span className="text-xs text-gray-400 font-medium tracking-wide">Direction</span>
-        <span className="text-[1.05rem] font-bold text-gray-900 flex items-center gap-1">
-          {shot.direction}
-          <span style={{ color: meta.color }} className="text-base leading-none">
-            {meta.arrow}
-          </span>
+        <span className="text-xs text-gray-400 font-medium tracking-wide">
+          Club
+        </span>
+        <span className="text-[1.05rem] font-bold text-gray-900">
+          {shot.club ?? "-"}
         </span>
       </div>
 
       {/* Distance */}
       <div className="flex flex-col gap-1">
-        <span className="text-xs text-gray-400 font-medium tracking-wide">Distance</span>
+        <span className="text-xs text-gray-400 font-medium tracking-wide">
+          Distance
+        </span>
         <span className="text-[1.05rem] font-bold text-gray-900">
           {shot.distance ?? "-"}
           {shot.distance !== null && (
             <span className="text-sm font-normal text-gray-500 ml-0.5">m</span>
+          )}
+        </span>
+      </div>
+
+      {/* Direction */}
+      <div className="flex flex-col gap-1">
+        <span className="text-xs text-gray-400 font-medium tracking-wide">
+          Direction
+        </span>
+        <span className="text-[1.05rem] font-bold text-gray-900 flex items-center gap-1">
+          {shot.direction ?? "-"}
+          {meta.arrow && (
+            <span
+              style={{ color: meta.color }}
+              className="text-base leading-none"
+            >
+              {meta.arrow}
+            </span>
           )}
         </span>
       </div>
@@ -169,7 +168,7 @@ export default function HistoryPage() {
         _id: item._id,
         time: formatTime(item.recordedAt),
         club: item.club,
-        direction: normalizeDirection(item.direction),
+        direction: item.direction ?? "N/A",
         distance: item.distance,
         shotType: item.shotType,
         position: item.position,

@@ -229,67 +229,23 @@ function TranscribedView({
       </h1>
 
       {/* Single result field */}
-      <div className="relative w-full bg-blue-50 border border-blue-100 rounded-xl px-4 py-4 min-h-[120px] flex flex-col justify-between">
-        {/* Content */}
-        <div className="text-black text-[18px] leading-relaxed font-medium tracking-wide space-y-3 pr-8">
-          {displayValues.length > 0 ? (
-            <>
-              {/* First Box */}
-              <div className="bg-blue-100 border border-blue-200 rounded-lg px-3 py-2">
-                <div className="flex flex-wrap items-center gap-1">
-                  {[club, distance ? `${distance}m` : "", direction, shotType]
-                    .filter(Boolean)
-                    .map((value, idx) => {
-                      const isDistance = distance && value === `${distance}m`;
-                      return (
-                        <span
-                          key={`top-${value}-${idx}`}
-                          className={
-                            isDistance ? "" : ""
-                          }
-                        >
-                          {idx > 0 ? ", " : ""}
-                          {value}
-                        </span>
-                      );
-                    })}
-                </div>
-              </div>
-
-              {/* Second Box */}
-              <div className="bg-gray-100 border border-gray-200 rounded-lg px-3 py-2">
-                <div className="flex flex-wrap items-center gap-1">
-                  {[position, scoring, event]
-                    .filter(Boolean)
-                    .map((value, idx) => (
-                      <span key={`bottom-${value}-${idx}`}>
-                        {idx > 0 ? ", " : ""}
-                        {value}
-                      </span>
-                    ))}
-                </div>
-              </div>
-            </>
-          ) : (
-            "-"
-          )}
-        </div>
+      <div className="relative w-full bg-blue-50 border border-blue-200 rounded-2xl px-5 py-5 min-h-[80px] flex items-center">
+        <p className="text-gray-900 text-[1.15rem] font-semibold leading-relaxed pr-10 tracking-wide">
+          {displayValues.join(", ")}
+        </p>
 
         {/* Copy Button */}
         <button
           onClick={handleCopy}
           title="Copy"
-          className="absolute top-3 right-3 p-1 rounded-md hover:bg-gray-200 transition"
+          className="absolute top-3 right-3 p-1.5 rounded-lg hover:bg-blue-100 transition"
         >
-          <Copy className="w-4 h-4 text-gray-500" />
+          {copied ? (
+            <span className="text-xs text-green-600 font-semibold px-1">Copied!</span>
+          ) : (
+            <Copy className="w-4 h-4 text-gray-400" />
+          )}
         </button>
-
-        {/* Copied Text */}
-        {copied && (
-          <span className="absolute bottom-3 right-3 text-xs text-green-600 font-medium bg-white px-2 py-1 rounded-md shadow-sm">
-            Copied!
-          </span>
-        )}
       </div>
 
       <button
@@ -401,7 +357,7 @@ export default function StartRecording() {
         const result = await sendAudioMutation.mutateAsync(audioBlob);
         setClub(result?.data?.shot?.club || "");
         setDistance(
-          result?.data?.shot?.distance !== undefined
+          result?.data?.shot?.distance != null
             ? String(result.data.shot.distance)
             : "",
         );

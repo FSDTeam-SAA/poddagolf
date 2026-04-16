@@ -346,6 +346,8 @@ export default function HistoryPage() {
               {shots.length} total shots
             </p>
           )}
+
+          
         </div>
 
         {/* Body */}

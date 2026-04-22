@@ -1,3 +1,4 @@
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
@@ -172,7 +173,7 @@ function ShotCard({ shot }: { shot: SessionShotApi }) {
 
         {shot.rawText && (
           <p className="text-xs text-gray-400 italic">
-            "{shot.rawText}"
+            {shot.rawText}
           </p>
         )}
       </div>
@@ -376,7 +377,7 @@ export default function HistoryPage() {
         localStorage.getItem("recordingSessionId") || "my-round-005";
 
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/shots/round/my-round-005`
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/shots/round/${sessionId}`
       );
 
       if (!res.ok) throw new Error("Failed");
@@ -417,7 +418,7 @@ export default function HistoryPage() {
             </div>
             <h2 className="text-lg font-bold text-gray-800 mb-1">No Round Data Yet</h2>
             <p className="text-sm text-gray-400 max-w-xs">
-              You haven't recorded any shots for this round. Start your round and your shots will appear here.
+              You haven&apos;t recorded any shots for this round. Start your round and your shots will appear here.
             </p>
           </div>
         ) : (

@@ -1,4 +1,3 @@
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 "use client";
 
 import { useQuery } from "@tanstack/react-query";
@@ -235,13 +234,19 @@ function HoleSection({
 }
 
 // ─── Scorecard ────────────────────────────────────────────────────────────────
+interface ScorecardStripProps {
+  holeGroups: Map<number, SessionShotApi[]>;
+  sortedHoles: number[];
+  summary: SummaryApi[];
+}
+
 function ScorecardStrip({
   holeGroups,
   sortedHoles,
   summary,
-}: any) {
+}: ScorecardStripProps) {
   const invalidHoles = summary.filter(
-    (s: any) => !s.isValid && s.invalidReasons?.length > 0
+    (s: SummaryApi) => !s.isValid && s.invalidReasons?.length > 0
   );
 
   return (
@@ -256,7 +261,7 @@ function ScorecardStrip({
       <div className="flex divide-x divide-gray-100 overflow-x-auto">
         {sortedHoles.map((hole: number) => {
           const holeShots = holeGroups.get(hole)!;
-          const sum = summary.find((s: any) => s.holeNumber === hole);
+          const sum = summary.find((s: SummaryApi) => s.holeNumber === hole);
           const isInvalid = sum && !sum.isValid;
 
           return (
@@ -292,7 +297,7 @@ function ScorecardStrip({
       {/* Invalid Reasons */}
       {invalidHoles.length > 0 && (
         <div className="border-t border-red-100 bg-red-50 px-4 py-3 flex flex-col gap-1.5">
-          {invalidHoles.map((s: any) =>
+          {invalidHoles.map((s: SummaryApi) =>
             s.invalidReasons.map((reason: string, i: number) => (
               <div key={`${s.holeNumber}-${i}`} className="flex items-start gap-2">
                 <span
@@ -373,11 +378,8 @@ export default function HistoryPage() {
   const { data, isLoading } = useQuery({
     queryKey: ["session-shots"],
     queryFn: async () => {
-      const sessionId =
-        localStorage.getItem("recordingSessionId") || "my-round-005";
-
       const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/shots/round/${sessionId}`
+        `${process.env.NEXT_PUBLIC_BACKEND_API_URL}/shots/round/${localStorage.getItem("recordingSessionId") || "my-round-005"}`
       );
 
       if (!res.ok) throw new Error("Failed");
